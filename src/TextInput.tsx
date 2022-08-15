@@ -18,6 +18,7 @@ type TextInputProps = {
     requiredErrorMessage?: string;
     required?: boolean;
     autoComplete?: string;
+    placeholder?: string;
 };
 
 export const TextInput = memo((props: TextInputProps) => {
@@ -35,6 +36,7 @@ export const TextInput = memo((props: TextInputProps) => {
         id,
         autoComplete,
         className,
+        placeholder = name,
     } = props;
 
     const { control, register } = useFormContext();
@@ -53,7 +55,7 @@ export const TextInput = memo((props: TextInputProps) => {
                 className={classes.input}
                 type="text"
                 aria-label={ariaLabel}
-                placeholder={name}
+                placeholder={placeholder}
                 autoComplete={autoComplete}
                 {...register(props.id, {
                     required,
