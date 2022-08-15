@@ -1,20 +1,25 @@
-import { memo, useEffect, useState } from "react";
+import { memo, ReactNode, useEffect, useState } from "react";
 import { Menu, MenuButton, MenuButtonArrow, MenuItem, useMenuState } from "ariakit/menu";
 import { useCallbackFactory } from "powerhooks/useCallbackFactory";
 import { makeStyles } from "./theme";
 import { useFormContext } from "react-hook-form";
+import { assert } from "tsafe/assert";
 
-type OptionListProps = {
+export type OptionListProps = {
     className?: string;
     classes?: Partial<ReturnType<typeof useStyles>["classes"]>;
     id: string;
     name: string;
     items: string[];
     defaultSelectedItem?: string;
+    dependentElements?: Record<string, ReactNode>;
 };
 
 export const OptionList = memo((props: OptionListProps) => {
-    const { className, id, items, name, defaultSelectedItem = items[0] } = props;
+    const { className, id, items, name, defaultSelectedItem = items[0], dependentElements } = props;
+
+    const dependentElementNames =
+        dependentElements === undefined ? undefined : Object.keys(dependentElements);
 
     const [currentItem, setCurrentItem] = useState(defaultSelectedItem);
     const menu = useMenuState({
@@ -37,26 +42,44 @@ export const OptionList = memo((props: OptionListProps) => {
 
     return (
         <div className={cx(classes.root, className)}>
-            <label>
-                <h5>{name} :</h5>
-            </label>
-            <MenuButton className={classes.button} state={menu}>
-                {currentItem}
-                <MenuButtonArrow />
-            </MenuButton>
-            <Menu className={classes.menu} state={menu}>
-                {items.map(item => (
-                    <MenuItem className={classes.menuItem} key={item} onClick={selectItemFactory(item)}>
-                        {item}
-                    </MenuItem>
-                ))}
-            </Menu>
+            <div className={classes.labelAndMenuWrapper}>
+                <label>
+                    <h5>{name} :</h5>
+                </label>
+                <MenuButton className={classes.button} state={menu}>
+                    {currentItem}
+                    <MenuButtonArrow />
+                </MenuButton>
+                <Menu className={classes.menu} state={menu}>
+                    {items.map(item => (
+                        <MenuItem
+                            className={classes.menuItem}
+                            key={item}
+                            onClick={selectItemFactory(item)}
+                        >
+                            {item}
+                        </MenuItem>
+                    ))}
+                </Menu>
+            </div>
+            {dependentElementNames !== undefined &&
+                dependentElementNames.map(name => {
+                    assert(dependentElements !== undefined);
+                    if (name !== currentItem) {
+                        return;
+                    }
+                    return <div key={name}>{dependentElements[name]}</div>;
+                })}
         </div>
     );
 });
 
 const useStyles = makeStyles()({
     "root": {
+        "display": "flex",
+        "flexDirection": "column",
+    },
+    "labelAndMenuWrapper": {
         "display": "flex",
         "gap": 10,
     },
