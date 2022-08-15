@@ -50,7 +50,8 @@
         "react-hook-form": "^7.34.1",
         "tss-react": "^3.7.1",
         "powerhooks": "^0.20.11",
-        "ariakit": "^2.0.0-next.38"
+        "ariakit": "^2.0.0-next.38",
+        "tsafe": "^1.0.0"
     },
     "devDependencies": {
         "@emotion/react": "^11.7.1",
