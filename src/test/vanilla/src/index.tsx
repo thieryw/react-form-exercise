@@ -21,6 +21,7 @@ root.render(
                         autoComplete="family-name"
                         required={true}
                         requiredErrorMessage="Le champ est obligatoire"
+                        placeholder="John"
                     />
                     <TextInput
                         name="prenom"
@@ -29,6 +30,7 @@ root.render(
                         autoComplete="given-name"
                         required={true}
                         requiredErrorMessage="Le champ est obligatoire"
+                        placeholder="Doe"
                     />
                     <Checkbox
                         ariaLabel="Etes vous majeur ?"
@@ -37,9 +39,20 @@ root.render(
                         dependentElements={
                             <>
                                 <OptionList
-                                    id="18+.model"
-                                    name="quel est votre model de voiture ?"
+                                    id="18+.mark"
+                                    name="quel est la mark de voiture ?"
                                     items={["mercedes", "porch", "lexus", "B M W"]}
+                                    dependentElements={{
+                                        "mercedes": (
+                                            <TextInput
+                                                name="model"
+                                                id="18+.mark.model"
+                                                ariaLabel="model"
+                                                required={true}
+                                                requiredErrorMessage="Le champ est obligatoire"
+                                            />
+                                        ),
+                                    }}
                                 />
                             </>
                         }
