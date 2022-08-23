@@ -36,23 +36,26 @@ root.render(
                         ariaLabel="Etes vous majeur ?"
                         name="Etes vous majeur ?"
                         id="18+"
-                        dependentElements={
+                        dependentElement={
                             <>
-                                <OptionList
+                                <OptionList<"mercedes" | "porch" | "lexus" | "B M W">
                                     id="18+.mark"
                                     name="quel est la mark de voiture ?"
                                     items={["mercedes", "porch", "lexus", "B M W"]}
-                                    dependentElements={{
-                                        "mercedes": (
-                                            <TextInput
-                                                name="model"
-                                                id="18+.mark.model"
-                                                ariaLabel="model"
-                                                required={true}
-                                                requiredErrorMessage="Le champ est obligatoire"
-                                            />
-                                        ),
-                                    }}
+                                    dependentElements={[
+                                        {
+                                            "key": "porch",
+                                            "node": (
+                                                <TextInput
+                                                    name="model"
+                                                    id="18+.mark.model"
+                                                    ariaLabel="model"
+                                                    required={true}
+                                                    requiredErrorMessage="Le champ est obligatoire"
+                                                />
+                                            ),
+                                        },
+                                    ]}
                                 />
                             </>
                         }
