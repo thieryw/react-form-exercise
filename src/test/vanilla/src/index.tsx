@@ -38,13 +38,14 @@ root.render(
                         id="18+"
                         dependentElement={
                             <>
-                                <OptionList<"mercedes" | "porch" | "lexus" | "B M W">
+                                <OptionList<["mercedes", "porch", "lexus", "B M W"]>
                                     id="18+.mark"
                                     name="quel est la mark de voiture ?"
                                     items={["mercedes", "porch", "lexus", "B M W"]}
+                                    defaultSelectedItem="B M W"
                                     dependentElements={[
                                         {
-                                            "key": "porch",
+                                            "key": "lexus",
                                             "node": (
                                                 <TextInput
                                                     name="model"

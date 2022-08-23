@@ -5,20 +5,20 @@ import { makeStyles } from "./theme";
 import { useFormContext } from "react-hook-form";
 import { typedMemo } from "./tools/typedMemo";
 
-export type OptionListProps<Key> = {
+export type OptionListProps<Keys extends string[]> = {
     className?: string;
     classes?: Partial<ReturnType<typeof useStyles>["classes"]>;
     id: string;
     name: string;
-    items: Key[];
-    defaultSelectedItem?: Key;
+    items: Keys;
+    defaultSelectedItem?: Keys[number];
     dependentElements?: {
-        key: Key;
+        key: Keys[number];
         node: ReactNode;
     }[];
 };
 
-export const OptionList = typedMemo(<Key extends string = string>(props: OptionListProps<Key>) => {
+export const OptionList = typedMemo(<Keys extends string[]>(props: OptionListProps<Keys>) => {
     const { className, id, items, name, defaultSelectedItem = items[0], dependentElements } = props;
 
     const [currentItem, setCurrentItem] = useState(defaultSelectedItem);
@@ -33,7 +33,7 @@ export const OptionList = typedMemo(<Key extends string = string>(props: OptionL
         setValue(id, defaultSelectedItem);
     }, [id, items, register, setValue, defaultSelectedItem]);
 
-    const selectItemFactory = useCallbackFactory(([item]: [Key]) => {
+    const selectItemFactory = useCallbackFactory(([item]: [Keys[number]]) => {
         setCurrentItem(item);
         setValue(id, item);
     });
@@ -55,7 +55,7 @@ export const OptionList = typedMemo(<Key extends string = string>(props: OptionL
                         <MenuItem
                             className={classes.menuItem}
                             key={item}
-                            onClick={selectItemFactory(item as Key)}
+                            onClick={selectItemFactory(item as Keys[number])}
                         >
                             {item}
                         </MenuItem>
