@@ -1,25 +1,25 @@
-import { memo, ReactNode, useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { Menu, MenuButton, MenuButtonArrow, MenuItem, useMenuState } from "ariakit/menu";
 import { useCallbackFactory } from "powerhooks/useCallbackFactory";
 import { makeStyles } from "./theme";
 import { useFormContext } from "react-hook-form";
-import { assert } from "tsafe/assert";
+import { typedMemo } from "./tools/typedMemo";
 
-export type OptionListProps = {
+export type OptionListProps<Key> = {
     className?: string;
     classes?: Partial<ReturnType<typeof useStyles>["classes"]>;
     id: string;
     name: string;
-    items: string[];
-    defaultSelectedItem?: string;
-    dependentElements?: Record<string, ReactNode>;
+    items: Key[];
+    defaultSelectedItem?: Key;
+    dependentElements?: {
+        key: Key;
+        node: ReactNode;
+    }[];
 };
 
-export const OptionList = memo((props: OptionListProps) => {
+export const OptionList = typedMemo(<Key extends string = string>(props: OptionListProps<Key>) => {
     const { className, id, items, name, defaultSelectedItem = items[0], dependentElements } = props;
-
-    const dependentElementNames =
-        dependentElements === undefined ? undefined : Object.keys(dependentElements);
 
     const [currentItem, setCurrentItem] = useState(defaultSelectedItem);
     const menu = useMenuState({
@@ -33,7 +33,7 @@ export const OptionList = memo((props: OptionListProps) => {
         setValue(id, defaultSelectedItem);
     }, [id, items, register, setValue, defaultSelectedItem]);
 
-    const selectItemFactory = useCallbackFactory(([item]: [string]) => {
+    const selectItemFactory = useCallbackFactory(([item]: [Key]) => {
         setCurrentItem(item);
         setValue(id, item);
     });
@@ -55,21 +55,17 @@ export const OptionList = memo((props: OptionListProps) => {
                         <MenuItem
                             className={classes.menuItem}
                             key={item}
-                            onClick={selectItemFactory(item)}
+                            onClick={selectItemFactory(item as Key)}
                         >
                             {item}
                         </MenuItem>
                     ))}
                 </Menu>
             </div>
-            {dependentElementNames !== undefined &&
-                dependentElementNames.map(name => {
-                    assert(dependentElements !== undefined);
-                    if (name !== currentItem) {
-                        return;
-                    }
-                    return <div key={name}>{dependentElements[name]}</div>;
-                })}
+            {dependentElements !== undefined &&
+                dependentElements
+                    .filter(({ key }) => key === currentItem)
+                    .map(({ key, node }) => <div key={key}>{node}</div>)}
         </div>
     );
 });
