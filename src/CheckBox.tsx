@@ -10,18 +10,18 @@ export type CheckboxProps = {
     id: string;
     ariaLabel: string;
     isChecked?: boolean;
-    dependentElements?: ReactNode;
+    dependentElement?: ReactNode;
 };
 
 export const Checkbox = memo((props: CheckboxProps) => {
-    const { className, ariaLabel, name, isChecked, id, dependentElements } = props;
+    const { className, ariaLabel, name, isChecked, id, dependentElement } = props;
 
     const [areDependentInputsDisplayed, setAreDependentInputsDisplayed] = useState(isChecked);
 
     const { unregister, register } = useFormContext();
 
     const onClick = useConstCallback(() => {
-        if (dependentElements === undefined) {
+        if (dependentElement === undefined) {
             return;
         }
         setAreDependentInputsDisplayed(!areDependentInputsDisplayed);
@@ -43,14 +43,14 @@ export const Checkbox = memo((props: CheckboxProps) => {
                     aria-label={ariaLabel}
                     checked={isChecked}
                     {...register(
-                        dependentElements === undefined || !areDependentInputsDisplayed
+                        dependentElement === undefined || !areDependentInputsDisplayed
                             ? id
                             : `${id}.value`,
                     )}
                 />
             </div>
 
-            {dependentElements !== undefined && areDependentInputsDisplayed && dependentElements}
+            {dependentElement !== undefined && areDependentInputsDisplayed && dependentElement}
         </div>
     );
 });
